@@ -58,7 +58,8 @@ As the Olympics' worldwide impact has grown, so too has the number of participat
 ```{r}
 ggplot(athletes_per_year, aes(x = year, y = num_athletes)) +
   geom_point(alpha = 0.7, color = "green", size = 2) +
-  labs(title = "Number of Athletes Over Time", x = "Year", y = "Number of Athletes") +
+  labs(title = "Number of Athletes Over Time", x = "Year", 
+  y = "Number of Athletes") +
   theme_minimal() +
   theme(plot.margin = margin(20, 20, 20, 20))
 ```
