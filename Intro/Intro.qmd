@@ -1,0 +1,188 @@
+---
+title: "Olympic Medal Analysis - Exploratory Data Analysis"
+author: "Muhammad Y. Khan, Ge Zhang, Chao Wang, Saud A. Abbasi"
+format: pdf
+bibliography: references.bib
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[L]{Olympic Medal Analysis}
+  - \fancyfoot[C]{\thepage}
+  - \fancyfoot[R]{Trent University | February 8, 2025}
+---
+
+## Introduction
+
+This Exploratory Data Analysis (EDA) investigates the Olympic medal dataset and offers a thorough examination of Olympic history from Athens in 1896 to Rio in 2016 using data gathered from a variety of sources. The main source of the data is Heesoo Park's [@heesoo37] Kaggle dataset, "120 years of Olympic history: athletes and results." This large dataset, which covers both summer and winter games, offers a comprehensive historical record of Olympic participants and their performances. In this EDA a dataset that was selected by the TidyTuesday project [@tidytuesday2024] is utilized, which provides a subset of this data that may be used to practice data visualization and analysis. The same Kaggle source is used to create this TidyTuesday dataset.
+
+The goal of the R4DS Online Learning Community's TidyTuesday project is to give data enthusiasts access to real-world datasets so they may hone their data wrangling and visualization capabilities [@r4ds].By revisiting this Olympic dataset (previously featured in 2021 [@tidytuesday2021]), the project allows for continued exploration of athletic achievements.
+
+## Data Sources
+
+The primary data is sourced from the Kaggle dataset by Heesoo Park:
+
+<https://www.kaggle.com/datasets/heesoo37/120-years-of-olympic-history-athletes-and-results/data>
+
+A supplementary dataset is obtained from the TidyTuesday GitHub repository:
+
+<https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-08-06/olympics.csv>
+
+Reference to the analysis performed by Heesoo Park:
+
+<https://www.kaggle.com/code/heesoo37/olympic-history-data-a-thorough-analysis>
+
+## Data Description
+
+A vast amount of data regarding Olympic athletes and their performances from Athens 1896 to Rio 2016 is included in the merged databases. Below is a thorough explanation of each column:
+
+-   **id**: Unique identifier for each athlete.
+-   **name**: Athlete's full name.
+-   **sex**: Athlete's gender (M/F).
+-   **age**: Athlete's age at the time of the Olympic event.
+-   **height**: Athlete's height in centimeters.
+-   **weight**: Athlete's weight in kilograms.
+-   **team**: The team or nation the athlete represented.
+-   **noc**: National Olympic Committee code.
+-   **games**: Specific Olympic Games (e.g., "2016 Summer").
+-   **year**: Year of the Olympic Games.
+-   **season**: Season of the Games (Summer or Winter).
+-   **city**: Host city of the Olympic Games.
+-   **sport**: Sport in which the athlete competed.
+-   **event**: Specific event within the sport.
+-   **medal**: Type of medal won (Gold, Silver, Bronze, or NA if no medal was won).
+
+Note that both the Summer and Winter Olympics are included in the dataset. The Summer and Winter Games were held in the same year until 1992. Following 1992, they were spaced out, with the Winter Games taking place in 1994, followed by the Summer Games in 1996, and so on. More detailed data on athlete participation and performance across the whole time span can be found in the Kaggle dataset.
+
+## Initial Data Exploration
+
+Firstly the data is loaded into R. For the sake of conciseness, its important to concentrate the preliminary investigation on the TidyTuesday dataset. It is crucial to keep in mind that both datasets' ([@tidytuesday2021] and [@tidytuesday2024]) source data covers the years 1896–2016 from Athens.
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+#| label: load-data
+#| warning: false
+#| message: false
+olympics <- read_csv(paste0(
+  "https://raw.githubusercontent.com/rfordatascience/",
+  "tidytuesday/main/data/2024/2024-08-06/olympics.csv"
+))
+olympics <- clean_names(olympics)
+```
+
+### Glimpse of the Data
+
+Let's take a look at the first few rows and the structure of the TidyTuesday dataset.
+
+```{r}
+#| label: glimpse-data
+glimpse(olympics)
+```
+
+### Summary Statistics
+
+Now, let's generate summary statistics for the numerical columns in the TidyTuesday dataset.
+
+```{r}
+#| label: summary-stats
+summary(olympics)
+```
+From the summary statistics the following is observed:    
+
+### Athlete Demographics
+
+- The dataset includes over **135,000 unique athletes**, based on the `id` column.
+- **Age Distribution**:
+  - The youngest recorded athlete was **10 years old**, while the oldest was **97**.
+  - The **median age is 24**, and the **mean is 25.56**, indicating a slight **right skew** due to older athletes.
+  - Most athletes are in their **20s**, with an interquartile range (IQR) of **21 to 28**.
+  - **9,474 missing age values**, which may need to be addressed.
+
+### Physical Attributes
+
+- **Height** ranges from **127 cm to 226 cm**, with a **median of 175 cm**.
+- **Weight** varies from **25 kg to 214 kg**, with a **median of 70 kg**.
+- **Significant missing values**:
+  - **60,171 missing height values**
+  - **62,875 missing weight values**
+- The missing data might **impact analyses** involving athlete body metrics.
+
+### Olympic Games Timeline
+
+- The dataset covers **Olympics from 1896 to 2016**.
+- The **median year is 1988**, meaning half of the events occurred before this year and half after.
+- The **mean year (1978)** being close to the median suggests **a balanced distribution of data** over time.
+
+### Team Representation
+
+- The dataset contains **various teams and National Olympic Committees (NOCs)**.
+- Since these are categorical variables, further analysis can help understand **country participation trends**.
+
+### Medal Data
+
+- The `medal` column indicates whether an athlete won a **Gold, Silver, or Bronze medal**.
+- Many entries contain **NA values**, suggesting that a **large number of athletes participated but did not win a medal**.
+- Exploring medal-winning trends over time could provide insights into **which countries or athletes have dominated the Olympics**.
+
+
+
+### Initial Observations
+
+Based on Heesoo Park's analysis [@heesoo37analysis] and our preliminary investigation of the TidyTuesday dataset, the following can be concluded:
+
+1. **Data Range**: The dataset covers 120 years of Olympic history, from 1896 to 2016. Park points out that trends in which nations and sports predominate can be seen by looking at participation and medal tallies throughout time.
+
+2. **Demographics of Athletes**:
+
+    From extremely young athletes to people in their 60s or even 70s, the age range is rather broad. Park's analysis recommends looking into the age distributions of various genders and sports.
+    -   The wide range of sports represented probably contributes to the significant diversity in height and weight. Additional sport-specific analysis may uncover trends pertaining to the physical prerequisites for success.
+
+3. **Gender Representation**: The dataset contains both male and female athletes. Park draws attention to the growing number of female athletes over time.
+
+4. **Geographic Diversity**: The 'team' and 'noc' columns show that involvement came from a wide range of nations. Park's illustration of the medal distribution per nation offers insightful background information.
+
+5. **Diversity at the Olympics**:
+
+    - There are representatives from both the summer and winter Olympics.
+    - There are several host cities. Potential "host country advantage," as investigated by Park, could be discovered by comparing the performance of host nations to their average performance.
+
+6. **Sports and activities**: The Olympics' diversity is demonstrated by the large number of sports and specialized activities. Finding the sports with the most medals and participation would be a good place to start.
+
+7. **Medal Information**: Silver, Bronze, and Gold medals are noted, although several entries indicate NA, which means non-medalists are also listed. A thorough examination of Olympic participation requires an understanding of the percentage of non-medalists. Medal ratios, which are included in Park's research, offer additional information.
+
+### Unique Values in Categorical Variables
+
+Let's look at how the TidyTuesday dataset's important category variables are distributed:
+
+```{r}
+#| label: unique-values
+olympics |> distinct(medal)
+olympics |> distinct(season)
+olympics |> distinct(sex)
+```
+
+These findings help us understand the gender categories utilized in the dataset, the Olympic seasons, and the medal categories.
+
+## Potential Research Questions
+
+Given the richness of this dataset, and inspired by the questions explored by Heesoo Park, numerous intriguing research questions emerge:
+
+1. Does the age distribution of Olympic medalists differ by gender and sport, and how has it changed over time?
+2. Does an athlete's success in a particular sport correlate with their physical characteristics (weight, height), and if so, how has this relationship changed over time?
+3. How has the proportion of women in the Olympics changed since 1896, and how do medal distributions vary by gender in various sports and eras?
+4. In light of political and economic pressures, which nations have seen the biggest increases in medal counts throughout time, and what reasons might account for these gains?
+5. After adjusting for variables like population and economic development, are there any discernible patterns in the host nations' performance, and is there proof of a "host country advantage"?
+6. In light of geographic considerations, which sports are more popular in each season and how do Winter Olympic participants differ from Summer Olympic athletes?
+7. Do different countries' medal counts and team sizes have a link? Does this relationship alter depending on the sport or region? Does growing a team size have diminishing returns?
+8. How do summer and winter games differ in terms of performance (medals won)?
+
+# Bibliography
+
+::: {#refs}
+:::

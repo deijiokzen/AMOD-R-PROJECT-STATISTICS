@@ -1,0 +1,112 @@
+---
+title: "Visualization - Scatterplot"
+format: pdf
+editor: visual
+---
+
+```{r, include=FALSE}
+library(tidyverse)
+library(tidytuesdayR)
+
+tuesdata <- tidytuesdayR::tt_load(2024, week = 32)
+olympics <- tuesdata$olympics
+
+# Aggregate Data
+events_per_year <- olympics |> group_by(year) |> summarise(num_events = n_distinct(event))
+nations_per_year <- olympics |> group_by(year) |> summarise(num_nations = n_distinct(noc))
+athletes_per_year <- olympics |> group_by(year) |> summarise(num_athletes = n_distinct(name))
+
+gender_count_per_year <- olympics |> group_by(year, sex) |> summarise(count = n(), .groups = "drop")
+height_per_year <- olympics |> group_by(year) |> summarise(avg_height = mean(height, na.rm = TRUE))
+
+medals_gender <- olympics |> 
+  filter(!is.na(medal)) |> 
+  group_by(year, sex) |> 
+  summarise(medal_count = n(), .groups = "drop")
+```
+
+### Scatter Plot 1: Number of Events Over Years
+
+```{r}
+ggplot(events_per_year, aes(x = year, y = num_events)) +
+  geom_point(alpha = 0.7, color = "blue", size = 2) +
+  labs(title = "Number of Olympic Events Over Time", x = "Year", 
+       y = "Number of Events") +
+  theme_minimal() +
+  theme(plot.margin = margin(20, 20, 20, 20))
+```
+
+**Observation:**  
+The number of Olympic events has generally increased over time, especially after 1960, as this scatter plot shows. The incorporation of new sports, event variants, and a rise in female involvement as a result of societal and regulatory developments toward gender equality in sports are all factors contributing to this trend.
+
+### Scatter Plot 2: Number of Nations Over Years
+
+```{r}
+ggplot(nations_per_year, aes(x = year, y = num_nations)) +
+  geom_point(alpha = 0.7, color = "red", size = 2) +
+  labs(title = "Number of Participating Nations Over Time", x = "Year",
+       y = "Number of Nations") +
+  theme_minimal() +
+  theme(plot.margin = margin(20, 20, 20, 20))
+```
+
+**Observation:**  
+As the Olympics' worldwide impact has grown, so too has the number of participating nations. Notable leaps facilitate wider worldwide participation by corresponding with socio-political shifts like post-war eras and the end of apartheid.
+
+### Scatter Plot 3: Number of Athletes Over Years
+
+```{r}
+ggplot(athletes_per_year, aes(x = year, y = num_athletes)) +
+  geom_point(alpha = 0.7, color = "green", size = 2) +
+  labs(title = "Number of Athletes Over Time", x = "Year", y = "Number of Athletes") +
+  theme_minimal() +
+  theme(plot.margin = margin(20, 20, 20, 20))
+```
+
+**Observation:**  
+The significant increase in athlete participation, which was particularly apparent starting in the late 20th century, is highlighted in this map. The addition of new sports, the rise in women's competitions, and the broadening of qualifying requirements are some of the factors influencing this trend.
+
+### Scatter Plot 4: Number of Men and Women Over Years
+
+```{r}
+ggplot(gender_count_per_year, aes(x = year, y = count, color = sex)) +
+  geom_point(alpha = 0.7, size = 2) +
+  scale_color_manual(values = c("M" = "blue", "F" = "red")) +
+  labs(title = "Number of Male and Female Athletes Over Time", x = "Year",
+       y = "Number of Athletes", color = "Gender") +
+  theme_minimal() +
+  theme(plot.margin = margin(20, 20, 20, 20))
+```
+
+**Observation:**  
+The graphic shows large gains in female participation over time, indicating significant progress toward gender parity. This is consistent with both the IOC's particular efforts to balance female representation in the Games and worldwide initiatives for gender equality.
+
+### Scatter Plot 5: Average Athlete Height Over Years
+
+```{r}
+ggplot(height_per_year, aes(x = year, y = avg_height)) +
+  geom_point(alpha = 0.7, color = "purple", size = 2) +
+  labs(title = "Average Athlete Height Over Time", x = "Year", 
+       y = "Average Height (cm)") +
+  theme_minimal() +
+  theme(plot.margin = margin(20, 20, 20, 20))
+```
+
+**Observation:**  
+The plot displays variances in average athlete height, which may be a reflection of the wide variety of sports that have been played over time as well as the differences in athletic body types that are appropriate for various sports, such as basketball and gymnastics.
+
+### Scatter Plot 6: Medals Won by Men vs. Women Over Years
+
+```{r}
+ggplot(medals_gender, aes(x = year, y = medal_count, color = sex)) +
+  geom_point(alpha = 0.7, size = 2) +
+  scale_color_manual(values = c("M" = "blue", "F" = "red")) +
+  labs(title = "Medals Won by Men and Women Over Time", x = "Year", 
+       y = "Medal Count", color = "Gender") +
+  theme_minimal() +
+  theme(plot.margin = margin(20, 20, 20, 20))
+```
+
+**Observation:**  
+While historically dominated by male athletes, the gap in medal counts is closing, particularly visible from the late 20th century onwards, underscoring a shift in competitive dynamics and greater opportunities for women athletes to excel and compete.
+
