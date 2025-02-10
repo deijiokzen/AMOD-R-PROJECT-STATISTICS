@@ -72,27 +72,40 @@ olympics <- clean_names(olympics)
 
 #| label: unique-values
 
-cat("Medals:", paste(unique(olympics$medal), collapse = ", "), "\n")
-cat("Seasons:", paste(unique(olympics$season), collapse = ", "), "\n")
-cat("Sexes:", paste(unique(olympics$sex), collapse = ", "), "\n")
+cat(
+  "Medals: ", paste(unique(olympics$medal), collapse = ", "), "\n",
+  "Seasons: ", paste(unique(olympics$season), collapse = ", "), "\n",
+  "Sexes: ", paste(unique(olympics$sex), collapse = ", "), "\n"
+)
 
 ```
 
 
 These findings help us understand the gender categories utilized in the dataset, the Olympic seasons, and the medal categories.
 
-## Potential Research Questions
+## Initial Observations
 
-Given the richness of this dataset, and inspired by the questions explored by Heesoo Park, numerous intriguing research questions emerge:
+Based on Heesoo Park's analysis [@heesoo37analysis] and our preliminary investigation of the TidyTuesday dataset, the following can be concluded:
 
-1. Does the age distribution of Olympic medalists differ by gender and sport, and how has it changed over time?
-2. Does an athlete's success in a particular sport correlate with their physical characteristics (weight, height), and if so, how has this relationship changed over time?
-3. How has the proportion of women in the Olympics changed since 1896, and how do medal distributions vary by gender in various sports and eras?
-4. In light of political and economic pressures, which nations have seen the biggest increases in medal counts throughout time, and what reasons might account for these gains?
-5. After adjusting for variables like population and economic development, are there any discernible patterns in the host nations' performance, and is there proof of a "host country advantage"?
-6. In light of geographic considerations, which sports are more popular in each season and how do Winter Olympic participants differ from Summer Olympic athletes?
-7. Do different countries' medal counts and team sizes have a link? Does this relationship alter depending on the sport or region? Does growing a team size have diminishing returns?
-8. How do summer and winter games differ in terms of performance (medals won)?
+1. **Data Range**: The dataset covers 120 years of Olympic history, from 1896 to 2016. Park points out that trends in which nations and sports predominate can be seen by looking at participation and medal tallies throughout time.
+
+2. **Demographics of Athletes**:
+
+    From extremely young athletes to people in their 60s or even 70s, the age range is rather broad. Park's analysis recommends looking into the age distributions of various genders and sports.
+    -   The wide range of sports represented probably contributes to the significant diversity in height and weight. Additional sport-specific analysis may uncover trends pertaining to the physical prerequisites for success.
+
+3. **Gender Representation**: The dataset contains both male and female athletes. Park draws attention to the growing number of female athletes over time.
+
+4. **Geographic Diversity**: The 'team' and 'noc' columns show that involvement came from a wide range of nations. Park's illustration of the medal distribution per nation offers insightful background information.
+
+5. **Diversity at the Olympics**:
+
+    - There are representatives from both the summer and winter Olympics.
+    - There are several host cities. Potential "host country advantage," as investigated by Park, could be discovered by comparing the performance of host nations to their average performance.
+
+6. **Sports and activities**: The Olympics' diversity is demonstrated by the large number of sports and specialized activities. Finding the sports with the most medals and participation would be a good place to start.
+
+7. **Medal Information**: Silver, Bronze, and Gold medals are noted, although several entries indicate NA, which means non-medalists are also listed. A thorough examination of Olympic participation requires an understanding of the percentage of non-medalists. Medal ratios, which are included in Park's research, offer additional information.
 
 # Bibliography
 
